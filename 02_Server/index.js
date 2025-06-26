@@ -2,6 +2,8 @@
 const http = require("http");
 // Importing the fs (file system) module to handle file operations like reading and writing files
 const fs = require("fs");
+// Importing URL for URL parsing
+const url = require("url");
 
 // Creating an HTTP server
 const myServer = http.createServer((req, res) => {
@@ -11,13 +13,18 @@ const myServer = http.createServer((req, res) => {
     req.url
   } : ${new Date().toLocaleString()}\n`;
 
+  //URL Stuff
+  const myurl = url.parse(req.url, true);
+  console.log(myurl);
+
   fs.appendFile("log.txt", log, (err, data) => {
-    switch (req.url) {
+    switch (myurl.pathname) {
       case "/":
         res.end("You are at home page");
         break;
       case "/about":
-        res.end("I am sayoun parui");
+        const userName = myurl.query.myname; //myname will be passed from url param
+        res.end(`Hey ! ${userName} welcome`);
         break;
       default:
         res.end("404 Not found");
