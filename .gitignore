@@ -9,3 +9,7 @@ package-lock.json
 
 #log file
 log.txt
+
+fake_data.json
+
+./05_REST_API/fake_data.json
