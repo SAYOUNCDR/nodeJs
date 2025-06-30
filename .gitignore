@@ -13,3 +13,4 @@ log.txt
 fake_data.json
 
 ./05_REST_API/fake_data.json
+./05_REST_API/logFile.txt
