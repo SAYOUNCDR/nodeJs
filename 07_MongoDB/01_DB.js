@@ -23,36 +23,52 @@ mongoose
   .catch((err) => console.log("Mongo Error", err));
 
 // Schema
-const userSchema = new mongoose.Schema({
-  first_name: {
-    type: String,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    first_name: {
+      type: String,
+      required: true,
+    },
+    last_name: {
+      type: String,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    gender: {
+      type: String,
+    },
+    job_title: {
+      type: String,
+    },
   },
-  last_name: {
-    type: String,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  gender: {
-    type: String,
-  },
-  job_title: {
-    type: String,
-  },
-});
+  { timestamps: true }
+);
 
 const User = mongoose.model("user", userSchema);
 
-//Get user from DB
-app.get("/api/users", (req, res) => {
-  res.setHeader("X-MyHeader", "SayounExpress");
-  return res.json({ user: "Sayoun" });
+// 1. Get user from DB [HTML]
+app.get("/users", async (req, res) => {
+  const allDbUsers = await User.find({}); //All users
+  const html = `
+    <ul>
+        ${allDbUsers
+          .map((user) => `<li>${user.first_name}- ${user.email}</li>`)
+          .join(" ")}
+    </ul>
+    `;
+  res.send(html);
 });
 
-// Put data inside the DB
+// 2. Get all users from api endpoint [JSON]
+app.get("/api/users", async (req, res) => {
+  const allDbUsers = await User.find({});
+  return res.json(allDbUsers);
+});
+
+// 3. Put data inside the DB
 app.post("/api/users", async (req, res) => {
   const body = req.body;
   if (
@@ -75,4 +91,10 @@ app.post("/api/users", async (req, res) => {
 
   return res.status(201).json({ msg: "Inserted sucessfully" });
 });
+
+
+
+
+
+
 app.listen(PORT, () => console.log("Server started"));
