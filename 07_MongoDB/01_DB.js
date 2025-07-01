@@ -12,17 +12,19 @@ Schema -Define the structure
 
 const express = require("express");
 const mongoose = require("mongoose");
-const PORT = 8000;
 const app = express();
+const PORT = 8000;
 
+// MiddleWare
 app.use(express.urlencoded({ extended: false }));
-// Connection
+
+// MongoDb Connection
 mongoose
   .connect("mongodb://127.0.0.1:27017/api-crud")
   .then(() => console.log("MongoDb Connected"))
   .catch((err) => console.log("Mongo Error", err));
 
-// Schema
+// Schema of Collection
 const userSchema = new mongoose.Schema(
   {
     first_name: {
@@ -47,9 +49,10 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+//DB Creation
 const User = mongoose.model("user", userSchema);
 
-// 1. Get user from DB [HTML]
+// 1. Get users from DB [HTML]
 app.get("/users", async (req, res) => {
   const allDbUsers = await User.find({}); //All users
   const html = `
@@ -68,7 +71,7 @@ app.get("/api/users", async (req, res) => {
   return res.json(allDbUsers);
 });
 
-// 3. Put data inside the DB
+// 3. Insert data into the DB
 app.post("/api/users", async (req, res) => {
   const body = req.body;
   if (
@@ -92,14 +95,23 @@ app.post("/api/users", async (req, res) => {
   return res.status(201).json({ msg: "Inserted sucessfully" });
 });
 
-app.route("/api/users/:id").get(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    return res.status(404).json({ msg: "User Not Found in DB" });
-  }
-  return res.json(user);
-});
-
-// 4. Get user by ID:
+// 4. Get user by ID: Delete user by ID: Update User by ID
+app
+  .route("/api/users/:id")
+  .get(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ msg: "User Not Found in DB" });
+    }
+    return res.json(user);
+  })
+  .patch(async (req, res) => {
+    await User.findByIdAndUpdate(req.params.id, { last_name: "Changed" });
+    return res.json({ status: "Sucess" });
+  })
+  .delete(async (req, res) => {
+    await User.findByIdAndDelete(req.params.id);
+    return res.json({ status: "Sucess" });
+  });
 
 app.listen(PORT, () => console.log("Server started"));

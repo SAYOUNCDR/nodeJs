@@ -1,16 +1,7 @@
-# Ignore node_modules folder
 node_modules/
-
-# Ignore package.json file
 package.json
-
-# Ignore loc.json file
 package-lock.json
-
-#log file
 log.txt
-
 fake_data.json
-
 ./05_REST_API/fake_data.json
 ./05_REST_API/logFile.txt
