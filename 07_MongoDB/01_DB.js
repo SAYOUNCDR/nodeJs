@@ -92,9 +92,14 @@ app.post("/api/users", async (req, res) => {
   return res.status(201).json({ msg: "Inserted sucessfully" });
 });
 
+app.route("/api/users/:id").get(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ msg: "User Not Found in DB" });
+  }
+  return res.json(user);
+});
 
-
-
-
+// 4. Get user by ID:
 
 app.listen(PORT, () => console.log("Server started"));
