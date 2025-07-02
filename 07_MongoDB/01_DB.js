@@ -114,4 +114,4 @@ app
     return res.json({ status: "Sucess" });
   });
 
-app.listen(PORT, () => console.log("Server started"));
+app.listen(PORT, () => console.log(`Server started at ${PORT}`));
